@@ -5,9 +5,9 @@
 #### Libs used:
 
 - React
-- ExpoJs
+- ExpoJs / Expo Image Picker
 - Typescript
 - Nativewind
-- Zod & React hook form
+- Zod & React Hook Form
 - [Appwirte](appwrite.io) (backend)
 - Node 20.13

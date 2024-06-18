@@ -12,6 +12,15 @@ export type IContextType = {
   isLoading: boolean;
   isLoggedIn: boolean;
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  setUser: React.Dispatch<React.SetStateAction<IUser>>;
+};
+
+export type INewPost = {
+  userId: string;
+  caption: string;
+  file: File[];
+  location?: string | undefined;
+  tags?: string | undefined;
 };
 
 export type FormData = {

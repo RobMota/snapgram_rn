@@ -19,9 +19,9 @@ const FormField = ({
       className={`w-full self-start space-y-2 text-base  ${containerStyles}`}
     >
       <Text className="text-white">{label}</Text>
-      <View className=" h-12 bg-[#1F1F22] border-none rounded-md flex justify-center">
+      <View className=" border-none flex">
         <TextInput
-          className={`placeholder:text-white  px-3 ${inputStyles}`}
+          className={`placeholder:text-white px-3  ${inputStyles}`}
           secureTextEntry={label === "Password" ? true : false}
           {...textInputProps}
         />

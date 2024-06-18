@@ -21,10 +21,13 @@ const INITIAL_STATE = {
   user: INITIAL_USER,
   isLoading: false,
   isLoggedIn: false,
+  setUser: () => {},
   setIsLoggedIn: () => {},
 };
 
 const GlobalContext = createContext<IContextType>(INITIAL_STATE);
+
+export const useGlobalContext = () => useContext(GlobalContext);
 
 const GlobalProvider = ({ children }: PropsWithChildren) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -35,7 +38,14 @@ const GlobalProvider = ({ children }: PropsWithChildren) => {
     getCurrentUser()
       .then((response: any) => {
         if (response) {
-          setUser(response);
+          setUser({
+            id: response.$id,
+            name: response.name,
+            username: response.username,
+            email: response.email,
+            imageUrl: response.imageUrl,
+            bio: response.bio,
+          });
           setIsLoggedIn(true);
         } else {
           setIsLoggedIn(false);
@@ -52,7 +62,7 @@ const GlobalProvider = ({ children }: PropsWithChildren) => {
 
   return (
     <GlobalContext.Provider
-      value={{ isLoggedIn, setIsLoggedIn, user, isLoading }}
+      value={{ isLoggedIn, setIsLoggedIn, user, isLoading, setUser }}
     >
       {children}
     </GlobalContext.Provider>
@@ -60,5 +70,3 @@ const GlobalProvider = ({ children }: PropsWithChildren) => {
 };
 
 export default GlobalProvider;
-
-export const useGlobalContext = () => useContext(GlobalContext);

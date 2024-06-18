@@ -59,6 +59,7 @@ const SignUp = () => {
                 errorMessage={error?.message}
                 onChangeText={onChange}
                 containerStyles="mt-7"
+                inputStyles="bg-[#1F1F22] rounded-md h-12 justify-center"
               />
             )}
           />
@@ -72,7 +73,7 @@ const SignUp = () => {
                 value={value}
                 errorMessage={error?.message}
                 onChangeText={onChange}
-                containerStyles="mt-5"
+                containerStyles="mt-5 bg-[#1F1F22] rounded-md h-12 justify-center"
               />
             )}
           />
@@ -86,7 +87,7 @@ const SignUp = () => {
                 value={value}
                 errorMessage={error?.message}
                 onChangeText={onChange}
-                containerStyles="mt-5"
+                containerStyles="mt-5 bg-[#1F1F22] rounded-md h-12 justify-center"
               />
             )}
           />
@@ -100,7 +101,7 @@ const SignUp = () => {
                 value={value}
                 errorMessage={error?.message}
                 onChangeText={onChange}
-                containerStyles="mt-5"
+                containerStyles="mt-5 bg-[#1F1F22] rounded-md h-12 justify-center"
               />
             )}
           />

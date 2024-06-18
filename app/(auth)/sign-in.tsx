@@ -57,7 +57,9 @@ const SignUp = () => {
                 value={value}
                 errorMessage={error?.message}
                 onChangeText={onChange}
+                keyboardType="email-address"
                 containerStyles="mt-5"
+                inputStyles="bg-[#1F1F22] rounded-md h-12 justify-center"
               />
             )}
           />
@@ -72,6 +74,7 @@ const SignUp = () => {
                 errorMessage={error?.message}
                 onChangeText={onChange}
                 containerStyles="mt-5"
+                inputStyles="bg-[#1F1F22] rounded-md h-12 justify-center"
               />
             )}
           />

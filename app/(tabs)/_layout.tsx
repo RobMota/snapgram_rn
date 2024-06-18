@@ -1,4 +1,4 @@
-import { home } from "@/constants/icons";
+import { addPost, home } from "@/constants/icons";
 import { Tabs } from "expo-router";
 import React from "react";
 import { Image, Text, View } from "react-native";
@@ -49,6 +49,16 @@ export default function TabLayout() {
           title: "Home",
           tabBarIcon: ({ focused }) => (
             <TabIcon icon={home} name="Home" focused={focused} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="create"
+        options={{
+          title: "Create",
+          tabBarIcon: ({ focused }) => (
+            <TabIcon icon={addPost} name="Create" focused={focused} />
           ),
         }}
       />
