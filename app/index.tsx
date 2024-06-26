@@ -15,7 +15,7 @@ export default function App() {
     );
   }
 
-  if (isLoading && isLoggedIn) {
+  if (!isLoading && isLoggedIn) {
     return <Redirect href={"/home"} />;
   } else {
     return <Redirect href={"/sign-in"} />;

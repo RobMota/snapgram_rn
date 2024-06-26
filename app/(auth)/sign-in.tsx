@@ -1,7 +1,8 @@
 import CustomButton from "@/components/CustomButton";
 import FormField from "@/components/FormField";
 import { logo } from "@/constants/images";
-import { signIn } from "@/lib/appwrite/api";
+import { useGlobalContext } from "@/context/GlobalContext";
+import { getCurrentUser, signIn } from "@/lib/appwrite/api";
 import { SigninValidation } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, router } from "expo-router";
@@ -12,6 +13,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { z } from "zod";
 
 const SignUp = () => {
+  const { setIsLoggedIn, setUser } = useGlobalContext();
+
   const { control, handleSubmit } = useForm<z.infer<typeof SigninValidation>>({
     resolver: zodResolver(SigninValidation),
     defaultValues: {
@@ -26,11 +29,32 @@ const SignUp = () => {
     setIsSubmitting(true);
 
     try {
-      await signIn(data.email, data.password);
+      const session = await signIn(data.email, data.password);
 
-      router.replace("/home");
+      if (!session) {
+        Alert.alert("Login failed. Please try again.");
+
+        return;
+      }
+
+      const currentAccount = await getCurrentUser();
+
+      if (currentAccount) {
+        setUser({
+          id: currentAccount.$id,
+          name: currentAccount.name,
+          username: currentAccount.username,
+          email: currentAccount.email,
+          imageUrl: currentAccount.imageUrl,
+          bio: currentAccount.bio,
+        });
+        setIsLoggedIn(true);
+        router.replace("/home");
+      } else {
+        Alert.alert("Login failed. Please try again.");
+      }
     } catch (error: any) {
-      Alert.alert("sign-in Error: ", error.message);
+      Alert.alert("Error: ", error.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -81,7 +105,7 @@ const SignUp = () => {
 
           <CustomButton
             handlePress={handleSubmit(onSubmit)}
-            title="Sign up"
+            title="Sign in"
             containerStyles="mt-5"
             isLoading={isSubmittig}
           />

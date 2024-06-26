@@ -6,7 +6,7 @@ import { useGlobalContext } from "@/context/GlobalContext";
 import { createPost } from "@/lib/appwrite/api";
 import { PostValidation } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Redirect, router } from "expo-router";
+import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -15,9 +15,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { z } from "zod";
 
 const Create = () => {
-  const { user } = useGlobalContext();
+  const { user, setIsLoading } = useGlobalContext();
 
-  const { control, handleSubmit } = useForm<z.infer<typeof PostValidation>>({
+  const { control, handleSubmit, reset } = useForm<
+    z.infer<typeof PostValidation>
+  >({
     resolver: zodResolver(PostValidation),
     defaultValues: {
       caption: "",
@@ -36,8 +38,14 @@ const Create = () => {
     if (!newPost) {
       Alert.alert("Please try again");
     }
+    setIsLoading(true)
+    router.replace("/home");
+  };
 
-    return <Redirect href={"/home"} />;
+  const handleCancel = () => {
+    reset();
+
+    router.replace("/home");
   };
 
   return (
@@ -147,7 +155,7 @@ const Create = () => {
                   title="Cancel"
                   containerStyles="px-5 flex bg-[#1F1F22] w-24 mr-5"
                   textStyle="text-white"
-                  handlePress={() => router.replace("/home")}
+                  handlePress={handleCancel}
                 />
                 <CustomButton
                   title="Submit"

@@ -8,11 +8,12 @@ export type IUser = {
 };
 
 export type IContextType = {
-  user: IUser;
+  user: IUser | undefined;
   isLoading: boolean;
   isLoggedIn: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
-  setUser: React.Dispatch<React.SetStateAction<IUser>>;
+  setUser: React.Dispatch<React.SetStateAction<IUser | undefined>>;
 };
 
 export type INewPost = {

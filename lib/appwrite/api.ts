@@ -3,7 +3,7 @@ import { Alert } from "react-native";
 import { ID, ImageGravity, Query } from "react-native-appwrite";
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
 
-export const createUser = async (user: {
+export const createAccount = async (user: {
   name: string;
   username: string;
   email: string;
@@ -20,20 +20,35 @@ export const createUser = async (user: {
 
   const avatarUrl = avatars.getInitials(user.name);
 
-  const newUser = await databases.createDocument(
-    appwriteConfig.databaseId,
-    appwriteConfig.userCollectionId,
-    ID.unique(),
-    {
-      accountId: newAccount.$id,
-      name: newAccount.name,
-      email: newAccount.email,
-      username: user.username,
-      imageUrl: avatarUrl,
-    }
-  );
+  const newUser = await createUser({
+    accountId: newAccount.$id,
+    name: newAccount.name,
+    email: newAccount.email,
+    username: user.username,
+    imageUrl: avatarUrl,
+  });
 
   return newUser;
+};
+
+export const createUser = async (user: {
+  accountId: string;
+  email: string;
+  name: string;
+  imageUrl: URL;
+  username?: string;
+}) => {
+  try {
+    const newUser = await databases.createDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.userCollectionId,
+      ID.unique(),
+      user
+    );
+    return newUser;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const signIn = async (email: string, password: string) => {
@@ -70,19 +85,15 @@ export async function getCurrentUser() {
 }
 
 export const getRecentPosts = async () => {
-  try {
-    const posts = await databases.listDocuments(
-      appwriteConfig.databaseId,
-      appwriteConfig.postCollectionId,
-      [Query.orderDesc("$createdAt"), Query.limit(20)]
-    );
+  const posts = await databases.listDocuments(
+    appwriteConfig.databaseId,
+    appwriteConfig.postCollectionId,
+    [Query.orderDesc("$createdAt"), Query.limit(20)]
+  );
 
-    if (!posts) throw Error;
+  if (!posts) throw Error;
 
-    return posts.documents;
-  } catch (error) {
-    console.log(error);
-  }
+  return posts.documents;
 };
 
 export async function uploadFile(file: File) {
@@ -109,14 +120,13 @@ export function getFilePreview(fileId: string) {
     const fileUrl = storage.getFilePreview(
       appwriteConfig.storageId,
       fileId,
-      2000,
-      2000,
+      600,
+      600,
       ImageGravity.Center,
       100
     );
 
     if (!fileUrl) throw Error;
-
     return fileUrl;
   } catch (error) {
     console.log(error);
@@ -167,6 +177,16 @@ export async function createPost(post: INewPost) {
     }
 
     return newPost;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function signOut() {
+  try {
+    const session = await account.deleteSession("current");
+
+    return session;
   } catch (error) {
     console.log(error);
   }

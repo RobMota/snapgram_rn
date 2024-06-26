@@ -13,7 +13,7 @@ export default function ImageViewer({
   selectedImage,
   onChangeImage,
 }: ImageViwerProps) {
-  const [fileUrl, setfileUrl] = useState(() => !selectedImage && fileUpload);
+  const [fileUrl, setfileUrl] = useState(!selectedImage && fileUpload);
 
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({

@@ -16,7 +16,7 @@ const FormField = ({
 }: FormFieldProps) => {
   return (
     <View
-      className={`w-full self-start space-y-2 text-base  ${containerStyles}`}
+      className={`w-full self-start space-y-1 text-base  ${containerStyles}`}
     >
       <Text className="text-white">{label}</Text>
       <View className=" border-none flex">

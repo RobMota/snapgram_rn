@@ -1,7 +1,8 @@
 import CustomButton from "@/components/CustomButton";
 import FormField from "@/components/FormField";
 import { logo } from "@/constants/images";
-import { createUser } from "@/lib/appwrite/api";
+import { useGlobalContext } from "@/context/GlobalContext";
+import { createAccount } from "@/lib/appwrite/api";
 import { SignupValidation } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, router } from "expo-router";
@@ -22,14 +23,30 @@ const SignUp = () => {
     },
   });
 
+  const { setIsLoggedIn, setUser } = useGlobalContext();
   const [isSubmittig, setIsSubmitting] = useState(false);
 
   const onSubmit = async (data: z.infer<typeof SignupValidation>) => {
     setIsSubmitting(true);
     try {
-      await createUser(data);
+      const currentAccount = await createAccount(data);
 
-      router.replace("/home");
+      if (!currentAccount) {
+        Alert.alert("Something went wrong. Please login your new account");
+        router.navigate("/sign-in");
+        return;
+      } else {
+        setUser({
+          id: currentAccount.$id,
+          name: currentAccount.name,
+          username: currentAccount.username,
+          email: currentAccount.email,
+          imageUrl: currentAccount.imageUrl,
+          bio: currentAccount.bio,
+        });
+        setIsLoggedIn(true);
+        router.replace("/home");
+      }
     } catch (error: any) {
       Alert.alert("Error: ", error.message);
     } finally {
@@ -73,7 +90,8 @@ const SignUp = () => {
                 value={value}
                 errorMessage={error?.message}
                 onChangeText={onChange}
-                containerStyles="mt-5 bg-[#1F1F22] rounded-md h-12 justify-center"
+                containerStyles="mt-4"
+                inputStyles="bg-[#1F1F22] rounded-md h-12 justify-center"
               />
             )}
           />
@@ -87,7 +105,8 @@ const SignUp = () => {
                 value={value}
                 errorMessage={error?.message}
                 onChangeText={onChange}
-                containerStyles="mt-5 bg-[#1F1F22] rounded-md h-12 justify-center"
+                containerStyles="mt-4"
+                inputStyles="bg-[#1F1F22] rounded-md h-12 justify-center"
               />
             )}
           />
@@ -101,7 +120,8 @@ const SignUp = () => {
                 value={value}
                 errorMessage={error?.message}
                 onChangeText={onChange}
-                containerStyles="mt-5 bg-[#1F1F22] rounded-md h-12 justify-center"
+                containerStyles="mt-4"
+                inputStyles="bg-[#1F1F22] rounded-md h-12 justify-center"
               />
             )}
           />

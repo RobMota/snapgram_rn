@@ -1,5 +1,5 @@
 import { getCurrentUser } from "@/lib/appwrite/api";
-import { IContextType } from "@/types";
+import { IContextType, IUser } from "@/types";
 import {
   PropsWithChildren,
   createContext,
@@ -21,8 +21,9 @@ const INITIAL_STATE = {
   user: INITIAL_USER,
   isLoading: false,
   isLoggedIn: false,
+  setIsLoggedIn: () => false as boolean,
+  setIsLoading: () => true as boolean,
   setUser: () => {},
-  setIsLoggedIn: () => {},
 };
 
 const GlobalContext = createContext<IContextType>(INITIAL_STATE);
@@ -32,40 +33,46 @@ export const useGlobalContext = () => useContext(GlobalContext);
 const GlobalProvider = ({ children }: PropsWithChildren) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState(INITIAL_USER);
+  const [user, setUser] = useState<IUser | undefined>(undefined);
 
   useEffect(() => {
+    
     getCurrentUser()
-      .then((response: any) => {
-        if (response) {
+      .then((currentAccount) => {
+        if (currentAccount) {
           setUser({
-            id: response.$id,
-            name: response.name,
-            username: response.username,
-            email: response.email,
-            imageUrl: response.imageUrl,
-            bio: response.bio,
+            id: currentAccount.$id,
+            name: currentAccount.name,
+            username: currentAccount.username,
+            email: currentAccount.email,
+            imageUrl: currentAccount.imageUrl,
+            bio: currentAccount.bio,
           });
           setIsLoggedIn(true);
         } else {
           setIsLoggedIn(false);
-          setUser(user);
+          setUser(undefined);
         }
       })
-      .catch((error: any) => {
-        console.log("Error: ", error.message);
+      .catch((error) => {
+        console.log(error);
       })
       .finally(() => {
         setIsLoading(false);
       });
   }, []);
 
+  const value = {
+    isLoggedIn,
+    setIsLoggedIn,
+    user,
+    isLoading,
+    setIsLoading,
+    setUser,
+  };
+
   return (
-    <GlobalContext.Provider
-      value={{ isLoggedIn, setIsLoggedIn, user, isLoading, setUser }}
-    >
-      {children}
-    </GlobalContext.Provider>
+    <GlobalContext.Provider value={value}>{children}</GlobalContext.Provider>
   );
 };
 
